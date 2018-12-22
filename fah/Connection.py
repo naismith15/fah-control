@@ -138,7 +138,7 @@ class Connection:
             self.fail_reason = 'connect'
         else: self.fail_reason = 'error'
 
-
+    #pco read bytes
     def read_some(self):
         bytesRead = 0
         try:
@@ -162,7 +162,7 @@ class Connection:
 
         return bytesRead
 
-
+    #pco write bytes
     def write_some(self):
         if len(self.writeBuf) == 0: return 0
 
@@ -229,8 +229,9 @@ class Connection:
 
         return False
 
-
+    #pco! connection update (send messages and read messages)
     def update(self):
+        print 'Connection Update Called...'
         try:
             try:
                 if not self.is_connected():
@@ -243,8 +244,8 @@ class Connection:
 
                 if not self.is_connected(): return
 
-                self.write_some()
-                if self.read_some():
+                self.write_some() #pco!! write all queued commands??
+                if self.read_some(): #pco!! get response from client
                     while self.parse(): continue
 
             # Handle special case for OSX disconnect
@@ -266,7 +267,7 @@ class Connection:
             self.close()
 
 
-
+#pco!!! connection init and listening
 if __name__ == '__main__':
     init = ['updates add 0 1 $options',
             'updates add 1 1 $queue-info',

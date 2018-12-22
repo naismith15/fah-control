@@ -32,7 +32,7 @@ import shlex
 from fah import *
 from fah.util import status_to_color, make_row, get_home_dir
 
-debug = False
+debug = True #pco - debug
 
 
 class Client:
@@ -178,6 +178,7 @@ class Client:
 
 
     # Slot control
+    #pco!! Slot commands to send to client
     def unpause(self, slot = ''):
         self.conn.queue_command('unpause %s' % str(slot))
 
@@ -218,7 +219,7 @@ class Client:
 
         cmd += ' %s *' % ' '.join(self.option_names)
 
-        self.conn.queue_command(cmd)
+        self.conn.queue_command(cmd) #pco!! queue save options command to be written to client 
         self.options_updated = False # Reload
 
 
@@ -229,22 +230,22 @@ class Client:
 
         # Deleted
         for id in deleted:
-            self.conn.queue_command('slot-delete %d' % id)
+            self.conn.queue_command('slot-delete %d' % id) #pco!! queue shot delete command to be written to client 
 
         # Modified
         for id, type, options in modified:
             cmd = 'slot-modify %d %s' % (id, type)
             for name, value in options.items():
                 if name[-1] == '!': cmd += ' ' + name
-                else: cmd += ' %s="%s"' % (name, value)
-            self.conn.queue_command(cmd)
+                else: cmd += ' %s="%s"' % (name, value) 
+            self.conn.queue_command(cmd) #pco!! queue slot mod command to be written to client 
 
         # Added
         for type, options in added:
             cmd = 'slot-add %s' % type
             for name, value in options.items():
                 cmd += ' %s="%s"' % (name, value)
-            self.conn.queue_command(cmd)
+            self.conn.queue_command(cmd) #pco!! queue slot added command to be written to client 
 
         self.slots_updated = False # Reload
 
@@ -255,8 +256,8 @@ class Client:
         self.save_options(options)
         self.save_slots(slots)
 
-        self.conn.queue_command('save')
-        self.conn.queue_command('updates reset')
+        self.conn.queue_command('save') #pco!! queue save command to be written to client 
+        self.conn.queue_command('updates reset') #pco!! queue updates reset command to be written to client 
 
 
     def set_power(self, power):
@@ -402,7 +403,7 @@ class Client:
         if sys.platform == 'darwin':
             try:
                 if self.conn.is_connected():
-                    self.conn.queue_command('quit')
+                    self.conn.queue_command('quit') #pco! example white a command
                     self.conn.write_some()
 
             except Exception, e:
