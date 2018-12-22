@@ -1,0 +1,6 @@
+sudo apt-get install -y python-stdeb python-gtk2 python-all debhelper
+
+python FAHControl
+
+___init___.py
+from Version import * # Version.py is local file, create it
