@@ -524,15 +524,15 @@ class FAHControl(SingleAppServer):
 
         if sys.platform != 'darwin':
             #pco check clients
-            print 'pco check clients'
+            print 'Main loop: call check clients'
             self.check_clients() # Slightly faster load?
 
         #self.restore()
 
-        #self.set_update_timer_interval(100)
-        while(True):
-            print "Waiting for clients... "
-            time.sleep(1)
+        self.set_update_timer_interval(100)
+        #while(True):
+        #    print "Waiting for clients... "
+        #    time.sleep(1)
             
         '''
         if sys.platform == 'darwin':
@@ -658,7 +658,7 @@ class FAHControl(SingleAppServer):
 
     #pco check clients
     def check_clients(self):
-        
+        print 'check clients called'
         # Make sure there is a selected client
         #if not len(self.selected_clients): self.select_first_client()
 
@@ -709,6 +709,7 @@ class FAHControl(SingleAppServer):
 
             self.last_clock = now
 
+            print 'on timer - check client'
             self.check_clients()
             self.viewer_check()
 
@@ -731,6 +732,7 @@ class FAHControl(SingleAppServer):
 
     # Actions
     def quit(self):
+        print "FAHControl quit called"
         if self.quitting: return
         self.quitting = True
 
@@ -1065,6 +1067,7 @@ class FAHControl(SingleAppServer):
 
     #pco save client conf
     def save_client_config(self, client):
+        print 'save client config called'
         try:
             options, slots = client.config.get_changes(self)
             if not (options or slots != ([], [], [])): return True
@@ -1088,6 +1091,7 @@ class FAHControl(SingleAppServer):
             for client in self.selected_clients:
                 # TODO check returned error count
                 client.save_config(options, slots)
+                print 'save client update in client config called'
                 client.update(self) # Slightly faster save
 
                 # Update password if changed on client

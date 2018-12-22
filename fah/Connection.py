@@ -275,6 +275,7 @@ if __name__ == '__main__':
     conn = Connection(init_commands = init)
 
     while True:
+        print 'save connection update call in connection __name__'
         conn.update()
 
         for version, type, data in conn.messages:
