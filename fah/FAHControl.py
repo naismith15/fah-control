@@ -517,7 +517,7 @@ class FAHControl(SingleAppServer):
         #self.window.connect('notify::is-active', self.on_window_is_active)
 
 
-    # Main loop
+    #pco Main loop
     def run(self):
         print 'fahc mainloop'
         self.quitting = False
@@ -529,8 +529,11 @@ class FAHControl(SingleAppServer):
 
         #self.restore()
 
-        self.set_update_timer_interval(100)
-
+        #self.set_update_timer_interval(100)
+        while(True):
+            print "Waiting for clients... "
+            time.sleep(1)
+            
         '''
         if sys.platform == 'darwin':
             # reduce updates to 2Hz after 30 seconds
@@ -563,7 +566,7 @@ class FAHControl(SingleAppServer):
                 self.window.add_accel_group(ag)
             except Exception, e: print e
 
-        gtk.main()
+        gtk.main() #pco Enter the main event loop, and wait for user interaction
         '''
 
 

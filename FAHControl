@@ -76,6 +76,6 @@ else:
     app = FAHControl(glade_data)
 
 try:
-    app.run()
+    app.run() #pco run app
 except Exception, e:
     print e

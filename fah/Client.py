@@ -330,7 +330,7 @@ class Client:
         if configured: return
         app.configure_dialog.show()
 
-#pco client process message
+#pco!!!! client process message
     def process_message(self, app, type, data):
         if debug: print 'message:', type, data
 
