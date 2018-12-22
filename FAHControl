@@ -72,7 +72,7 @@ glade = dir + '/fah/FAHControl.glade'
 
 if os.path.exists(glade): app = FAHControl(glade)
 else:
-    from fah.FAHControl_glade import glade_data
+    from fah.FAHControl_glade import glade_data #pco app start
     app = FAHControl(glade_data)
 
 try:

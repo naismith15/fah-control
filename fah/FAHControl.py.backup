@@ -33,7 +33,6 @@ import shlex
 import subprocess
 from wraplabel import WrapLabel
 
-'''
 # OSX integration
 if sys.platform == 'darwin':
     try:
@@ -44,13 +43,11 @@ if sys.platform == 'darwin':
         from gtkosx_application import gtkosx_application_get_resource_path \
             as quartz_application_get_resource_path
 
-'''
-
 from fah import *
 from fah.db import *
 from fah.util import *
 
-'''
+
 def set_tree_view_font(widget, font):
     for widget in iterate_container(widget):
         if isinstance(widget, gtk.TreeView):
@@ -72,7 +69,7 @@ def remove_tree_selection(tree_view, callback = None):
         if callback is not None: callback(path, iter)
         tree_view.get_model().remove(iter)
 
-'''
+
 def osx_version():
     """ returns osx version as tuple of integers """
     if sys.platform != 'darwin': return None
@@ -84,7 +81,7 @@ def osx_version():
         ver = (10, int(darwin_ver[0]) - 4, int(darwin_ver[1]))
     return ver
 
-'''
+
 def osx_add_GtkApplicationDelegate_methods():
     # GtkApplicationDelegate Category via PyObjC
     def applicationShouldHandleReopen_hasVisibleWindows_(self, app, flag):
@@ -115,8 +112,7 @@ def osx_accel_window_minimize(accel_group, acceleratable, keyval, modifier):
     acceleratable.iconify()
     return True
 
-'''
-#pco db
+
 def load_fahcontrol_db():
     db = Database(os.path.join(get_home_dir(), 'FAHControl.db'))
     db.validate()
@@ -148,13 +144,12 @@ class FAHControl(SingleAppServer):
 
     instance = None
 
-    def __init__(self, glade = 'FAHControl.glade'): #pco init fahcontrol
-        SingleAppServer.__init__(self) #pco call to singleappserver
+    def __init__(self, glade = 'FAHControl.glade'):
+        SingleAppServer.__init__(self)
 
         self.__class__.instance = self
 
         # Vars
-        self.client_list = []
         self.clients = {}
         self.clientsByAddress = {}
         self.active_client = None
@@ -171,7 +166,6 @@ class FAHControl(SingleAppServer):
         self.timer_id = None
         self.folding_power_changing = False
 
-        print 'open db'
         # Open database
         try:
             self.db = load_fahcontrol_db()
@@ -181,15 +175,13 @@ class FAHControl(SingleAppServer):
             sys.exit(1)
 
         # OSX integration
-        '''
         if sys.platform == 'darwin':
             self.osx_app = OSXApplication()
             self.osx_app.set_use_quartz_accelerators(True)
             self.osx_version = osx_version()
             self.is_old_gtk = gtk.gtk_version < (2,24)
             osx_add_GtkApplicationDelegate_methods()
-        '''
-        '''
+
         # URI hook
         gtk.link_button_set_uri_hook(self.on_uri_hook, None)
 
@@ -205,9 +197,7 @@ class FAHControl(SingleAppServer):
         if os.path.exists(rcfile): gtk.rc_parse(rcfile)
         self.mono_font = pango.FontDescription('Monospace')
         small_font = pango.FontDescription('Sans 8')
-        '''
 
-        '''
         # Default icon
         gtk.window_set_default_icon(get_icon('small'))
 
@@ -451,9 +441,7 @@ class FAHControl(SingleAppServer):
                 self.time_label.set_property('xpad', 6)
             else:
                 self.time_label.set_property('xpad', 2)
-        '''
-        
-        '''
+
         # Validators
         EntryValidator(self, self.client_option_widgets['user'], r'^[!-~]+$',
                        'User name must be a non-empty string containing only '
@@ -480,58 +468,46 @@ class FAHControl(SingleAppServer):
                               builder.get_object('proxy_pass_valid_image'),
                               builder.get_object('proxy_pass_valid_text'))
 
-        '''
-        print 'set port'
         # Fix client port default
-        #port = builder.get_object('port_adjustment')
-        #port.set_value(36330)
+        port = builder.get_object('port_adjustment')
+        port.set_value(36330)
 
         # Connect signals
-        #builder.connect_signals(self)
-        #self.builder = builder = None # Discard builder
+        builder.connect_signals(self)
+        self.builder = builder = None # Discard builder
 
-        #self.client_dialog.client = None
+        self.client_dialog.client = None
 
         # Load
-        #self.preferences_load()
-        print 'pco - load clients'
+        self.preferences_load()
         self.load_clients()
-        print 'pco - clients loaded'
 
         # If we don't have any clients add the default client
-        #pco default client
         if not len(self.clients):
-            print 'pco - create default client'
             client = Client(self, 'local', '127.0.0.1', 36330, '')
-            #self.client_list = self.client_list.append(client)
             self.add_client(client)
             self.save_clients()
-            print 'pco - default client created'
 
         # Select first client
-       # self.select_first_client()
+        self.select_first_client()
 
         # Start client notebook deactivated
-        #self.deactivate_client()
+        self.deactivate_client()
 
-        #self.window.connect('notify::is-active', self.on_window_is_active)
+        self.window.connect('notify::is-active', self.on_window_is_active)
 
 
     # Main loop
     def run(self):
-        print 'fahc mainloop'
         self.quitting = False
 
         if sys.platform != 'darwin':
-            #pco check clients
-            print 'pco check clients'
             self.check_clients() # Slightly faster load?
 
-        #self.restore()
+        self.restore()
 
         self.set_update_timer_interval(100)
 
-        '''
         if sys.platform == 'darwin':
             # reduce updates to 2Hz after 30 seconds
             gobject.timeout_add(30000, self.set_update_timer_interval, 500)
@@ -564,7 +540,6 @@ class FAHControl(SingleAppServer):
             except Exception, e: print e
 
         gtk.main()
-        '''
 
 
     # Util
@@ -653,21 +628,13 @@ class FAHControl(SingleAppServer):
         return False # stop if timer callback
 
 
-    #pco check clients
     def check_clients(self):
-        
         # Make sure there is a selected client
-        #if not len(self.selected_clients): self.select_first_client()
+        if not len(self.selected_clients): self.select_first_client()
 
         # Update clients
-        for client in self.clients.values(): 
-            client.update(self) #pco dict.values()
-            if client.is_online(): #pco is_online?
-                print 'client is online'
-            else:
-                print 'client is not online'
-           
-        '''
+        for client in self.clients.values(): client.update(self)
+
         # (De)activate client
         if self.active_client:
             if not self.active_client.is_updated():
@@ -676,17 +643,15 @@ class FAHControl(SingleAppServer):
         else: self.activate_client() # Try to activate
 
         # Check if active and online
-        if self.active_client and self.active_client.is_online(): #pco is_online?
-            #self.client_notebook.set_sensitive(True)
-            print 'client active and online'
-        else: #self.client_notebook.set_sensitive(False)
-            print 'client not active and online'
-        
+        if self.active_client and self.active_client.is_online():
+            self.client_notebook.set_sensitive(True)
+        else: self.client_notebook.set_sensitive(False)
+
         # Update status bar
         if self.status_clear_time and self.status_clear_time < time.time():
             self.status_bar.pop(0)
             self.status_clear_time = None
-        '''
+
 
     def on_timer(self):
         try:
@@ -856,7 +821,6 @@ class FAHControl(SingleAppServer):
                     iter = model.iter_next(iter)
 
 
-    #pco pref load
     def preferences_load(self):
         # Preferences dialog
         for name, widget in self.preference_widgets.items():
@@ -958,7 +922,7 @@ class FAHControl(SingleAppServer):
         if self.client_dialog.client is not None:
             self.client_config_label.set_markup(text)
 
-    ##PCO save clients
+
     def save_clients(self):
         self.db.delete('clients')
 
@@ -967,8 +931,7 @@ class FAHControl(SingleAppServer):
 
         self.db.commit()
 
-    
-    '''
+
     def update_client_list(self):
         # update all rows, whether selected/active or not
         try:
@@ -985,7 +948,7 @@ class FAHControl(SingleAppServer):
                 iter = self.client_list.iter_next(iter)
         except Exception, e: print e
         return False # no timer repeat
-        '''
+
 
     def resort_client_list(self):
         ibyname_old = {}
@@ -1039,16 +1002,13 @@ class FAHControl(SingleAppServer):
 
         return group0 + group1 + group2 + group3 + group4
 
-    #pco load clients
+
     def load_clients(self):
-        
         clients = []
         for row in self.db.select('clients', orderby = 'name'):
-            print 'client found'
             client = Client(self,
                 row['name'], row['address'], int(row['port']), row['password'])
             clients.append(client)
-            print 'client:' + client.name + ',' + client.password + ',' + client.address + ':' + str(client.port)
 
         for client in self.sorted_clients(clients):
             self.add_client(client)
@@ -1060,7 +1020,7 @@ class FAHControl(SingleAppServer):
         self.clientsByName.clear()
         self.client_list.clear()
 
-    #pco save client conf
+
     def save_client_config(self, client):
         try:
             options, slots = client.config.get_changes(self)
@@ -1114,7 +1074,7 @@ class FAHControl(SingleAppServer):
             return True
         return False
 
-    #pco update client
+
     def update_client(self, client, name, address, port, password):
         reload = False
         old_name = client.name
@@ -1167,7 +1127,7 @@ class FAHControl(SingleAppServer):
 
         return True
 
-    #pco add client
+
     def add_client(self, client):
         name = client.name
         address = client.get_address()
@@ -1177,10 +1137,9 @@ class FAHControl(SingleAppServer):
         if self.check_duplicate_client_address(address): return False
 
         # Add it
-        self.client_list = self.client_list.append(client);
         self.clients[name] = client
         self.clientsByAddress[address] = client
-        #self.client_list.append(client.get_row(self))
+        self.client_list.append(client.get_row(self))
 
         return True
 
@@ -1273,7 +1232,7 @@ class FAHControl(SingleAppServer):
         dialog.destroy()
         self.error_dialog = None
 
-    #pco error messafes
+
     def error(self, message, buttons = gtk.BUTTONS_OK, on_response = None,
               on_response_data = None):
         message = str(message)
@@ -1627,7 +1586,7 @@ class FAHControl(SingleAppServer):
     def on_finish_button_clicked(self, widget, data = None):
         self.active_client.finish()
 
-    #pco - folding power
+
     def on_folding_power_change_value(self, widget, scroll, value, data = None):
         # Clamp slider to integer increments
         value = int(round(value))

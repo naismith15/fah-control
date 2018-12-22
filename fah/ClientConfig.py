@@ -66,6 +66,7 @@ def get_active_combo_column(combo, column):
 class ClientConfig:
     queue_cols = ('id state statecolor percentdone percent').split()
 
+    #pco !client conf
     def __init__(self):
         self.last_updated = 0
         self.queue = []
@@ -286,7 +287,7 @@ class ClientConfig:
         for widget in app.queue_widgets.values():
             set_widget_str_value(widget, None)
 
-
+    #pco gui stuff
     def update_info(self, app):
         port = app.info
 
@@ -568,6 +569,7 @@ class ClientConfig:
         if self.get('proxy') != proxy: options['proxy'] = proxy
 
         # Core priority radio button
+        #gui stuff
         used.add('core-priority')
         if app.client_option_widgets['core_priority'].get_active():
             if self.have('core-priority') and \

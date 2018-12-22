@@ -25,6 +25,7 @@ import gtk
 
 from fah.Icon import get_icon
 
+#pco app server info, port etc
 single_app_host = '127.0.0.1'
 single_app_port = 32455
 single_app_addr = (single_app_host, single_app_port)
@@ -43,7 +44,7 @@ class SingleAppRequestHandler(SocketServer.BaseRequestHandler):
             self.request.send('OK\r\n')
 
 
-
+#pco single app server
 class SingleAppServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     allow_reuse_address = True
 

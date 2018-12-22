@@ -52,9 +52,9 @@ class Client:
         if not name: self.name = self.get_address()
 
         # Option names
-        names = app.client_option_widgets.keys()
-        self.option_names = map(lambda name: name.replace('_', '-'), names)
-        self.option_names.append('power') # Folding power
+        #names = app.client_option_widgets.keys()
+        #self.option_names = map(lambda name: name.replace('_', '-'), names)
+        #self.option_names.append('power') # Folding power
 
         # Init commands
         self.inactive_cmds = [
@@ -64,7 +64,7 @@ class Client:
             ]
 
         self.active_cmds = self.inactive_cmds + [
-            'updates add 2 1 $(options %s *)' % ' '.join(self.option_names),
+            #'updates add 2 1 $(options %s *)' % ' '.join(self.option_names),
             'updates add 3 4 $queue-info',
             'updates add 4 1 $slot-info',
             'info',
@@ -73,6 +73,7 @@ class Client:
             ]
 
         # Objects
+        #pco! client connection and config!
         self.config = ClientConfig()
         self.conn = Connection(self.address, self.port, self.password)
         self.conn.set_init_commands(self.inactive_cmds)
@@ -113,7 +114,7 @@ class Client:
     # State functions
     def is_local(self):
         return self.address == '127.0.0.1' and self.name == 'local'
-    def is_online(self): return self.conn.get_status() == 'Online'
+    def is_online(self): return self.conn.get_status() == 'Online' #pco check if online
 
     def set_selected(self, selected):
         if self.selected != selected:
@@ -143,7 +144,9 @@ class Client:
 
 
     # GUI functions
+    
     def load_dialog(self, app):
+        print 'client load_dialog called'
         app.client_entries['name'].set_text(self.name)
         app.client_entries['name'].set_sensitive(self.name != 'local')
         app.client_entries['address'].set_text(self.address)
@@ -154,7 +157,9 @@ class Client:
             self.config.update_options(app)
             self.config.update_slots_ui(app)
 
+
     def get_row(self, app):
+        print 'client get_row called'
         status = self.get_status()
         keys = {'name': self.name, 'status': status,
                 'status_color': status_to_color(status),
@@ -163,10 +168,12 @@ class Client:
 
 
     def update_status_ui(self, app):
+        print 'client update_status_ui called'
         self.config.update_status_ui(app)
 
 
     def reset_status_ui(self, app):
+        print 'client reset_status_ui called'
         self.config.reset_status_ui(app)
 
 
@@ -192,11 +199,13 @@ class Client:
 
 
     # Save functions
+    #pco client save functions
     def save(self, db):
         db.insert('clients', name = self.name, address = self.address,
                   port = self.port, password = self.password)
 
 
+#pco client save options
     def save_options(self, options):
         if not options: return
 
@@ -256,7 +265,7 @@ class Client:
             self.power = power
             self.conn.queue_command('option power ' + power)
 
-
+#pco client message processing
     # Message processing
     def process_options(self, app, data):
         self.options_updated = True
@@ -321,7 +330,7 @@ class Client:
         if configured: return
         app.configure_dialog.show()
 
-
+#pco client process message
     def process_message(self, app, type, data):
         if debug: print 'message:', type, data
 
@@ -345,7 +354,7 @@ class Client:
         prevStatus = self.get_status()
 
         try:
-            self.conn.update()
+            self.conn.update() #pco update client connect
 
             for version, type, data in self.conn.messages:
                 try:
@@ -358,6 +367,7 @@ class Client:
         except Exception, e:
             print e
 
+        '''
         # If client status has changed update UI
         newStatus = self.get_status()
         if prevStatus != newStatus:
@@ -381,7 +391,7 @@ class Client:
 
             # Update client status label
             if self.selected: app.update_client_status()
-
+        '''
 
     def reconnect(self):
         self.conn.close()
