@@ -530,12 +530,12 @@ class FAHControl(SingleAppServer):
         #self.restore()
             
         #self.set_update_timer_interval(100)
+        
+        
         while(True):
-            print "Waiting for clients... "
+            #print "Waiting for clients... "
             self.check_clients()
             time.sleep(1)
-            for client in self.clients.values():
-                client.set_power('light')
                 
             
         '''
@@ -662,7 +662,8 @@ class FAHControl(SingleAppServer):
 
     #pco check clients
     def check_clients(self):
-        print 'check clients called'
+        #print 'check clients called'
+        
         # Make sure there is a selected client
         #if not len(self.selected_clients): self.select_first_client()
 

@@ -256,7 +256,6 @@ class Client:
 
         self.save_options(options)
         self.save_slots(slots)
-
         self.conn.queue_command('save') #pco!! queue save command to be written to client 
         self.conn.queue_command('updates reset') #pco!! queue updates reset command to be written to client 
 
@@ -353,7 +352,7 @@ class Client:
 
 
     def update(self, app):
-        print 'client update called'
+        #print 'client update called'
         prevStatus = self.get_status()
 
         try:
