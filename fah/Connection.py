@@ -231,7 +231,7 @@ class Connection:
 
     #pco! connection update (send messages and read messages)
     def update(self):
-        print 'Connection Update Called...'
+        #print 'Connection Update Called...'
         try:
             try:
                 if not self.is_connected():

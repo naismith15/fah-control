@@ -532,6 +532,7 @@ class FAHControl(SingleAppServer):
         #self.set_update_timer_interval(100)
         while(True):
             print "Waiting for clients... "
+            self.check_clients()
             time.sleep(1)
             for client in self.clients.values():
                 client.set_power('light')
