@@ -5,3 +5,8 @@ python FAHControl
 
 ___init___.py
 from Version import * # Version.py is local file, create it
+
+
+=====
+
+set_power - 'Light', 'Medium', 'Full'

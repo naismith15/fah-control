@@ -528,11 +528,14 @@ class FAHControl(SingleAppServer):
             self.check_clients() # Slightly faster load?
 
         #self.restore()
-
-        self.set_update_timer_interval(100)
-        #while(True):
-        #    print "Waiting for clients... "
-        #    time.sleep(1)
+            
+        #self.set_update_timer_interval(100)
+        while(True):
+            print "Waiting for clients... "
+            time.sleep(1)
+            for client in self.clients.values():
+                client.set_power('light')
+                
             
         '''
         if sys.platform == 'darwin':

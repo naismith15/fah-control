@@ -63,6 +63,7 @@ class Client:
             'updates add 1 5 $ppd',
             ]
 
+        #pco active cmds
         self.active_cmds = self.inactive_cmds + [
             #'updates add 2 1 $(options %s *)' % ' '.join(self.option_names),
             'updates add 3 4 $queue-info',
@@ -206,7 +207,7 @@ class Client:
                   port = self.port, password = self.password)
 
 
-#pco client save options
+    #pco client save options
     def save_options(self, options):
         if not options: return
 
@@ -264,9 +265,9 @@ class Client:
         power = power.lower().replace(' ', '_')
         if power != self.power:
             self.power = power
-            self.conn.queue_command('option power ' + power)
+            self.conn.queue_command('option power ' + power) #pco!! queue power command to be written to client 
 
-#pco client message processing
+    #pco client message processing
     # Message processing
     def process_options(self, app, data):
         self.options_updated = True
@@ -331,7 +332,7 @@ class Client:
         if configured: return
         app.configure_dialog.show()
 
-#pco!!!! client process message
+    #pco!!!! client process message
     def process_message(self, app, type, data):
         if debug: print 'message:', type, data
 
@@ -352,6 +353,7 @@ class Client:
 
 
     def update(self, app):
+        print 'client update called'
         prevStatus = self.get_status()
 
         try:
@@ -403,7 +405,7 @@ class Client:
         if sys.platform == 'darwin':
             try:
                 if self.conn.is_connected():
-                    self.conn.queue_command('quit') #pco! example white a command
+                    self.conn.queue_command('quit') #pco! quit command sent to client
                     self.conn.write_some()
 
             except Exception, e:

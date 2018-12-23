@@ -189,7 +189,7 @@ class Connection:
 
 
     def queue_command(self, command):
-        if debug: print 'command: ' + command
+        if debug: print 'queue command: ' + command
         self.writeBuf += command + '\n'
 
 
@@ -273,7 +273,8 @@ if __name__ == '__main__':
             'updates add 1 1 $queue-info',
             'updates add 2 1 $slot-info']
     conn = Connection(init_commands = init)
-
+    print 'connection __name__'
+     
     while True:
         print 'save connection update call in connection __name__'
         conn.update()
